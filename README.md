@@ -1,5 +1,11 @@
 # squaremile.dev - AsyncTransport Samples
 
+
+## How to use AsyncTcp
+
+See [AsyncTcp code samples](asynctcpsamples/src/test/java/dev/squaremile/asynctransportsamples/asynctcpsamples/SamplesForAsyncTcpTest.java)
+
+
 ```
 cwd=$(pwd)
 git clone git@github.com:squaremiledev/asynctransport.git
