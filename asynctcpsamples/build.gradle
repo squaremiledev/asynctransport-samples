@@ -1,0 +1,18 @@
+plugins {
+    id 'java'
+    id 'idea'
+}
+
+dependencies {
+    testImplementation "dev.squaremile:asynctcp:${systemUnderTestVersion}"
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.5.2'
+    testImplementation 'org.assertj:assertj-core:3.16.1'
+}
+compileJava {
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+}
+
+test {
+    useJUnitPlatform()
+}
