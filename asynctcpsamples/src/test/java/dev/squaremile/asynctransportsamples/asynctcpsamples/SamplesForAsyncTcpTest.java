@@ -14,9 +14,9 @@ import dev.squaremile.asynctcp.domain.api.commands.Listen;
 import dev.squaremile.asynctcp.domain.api.events.Connected;
 import dev.squaremile.asynctcp.domain.api.events.StartedListening;
 import dev.squaremile.asynctcp.nonblockingimpl.NonBlockingTransport;
-import dev.squaremile.asynctcp.support.TransportEventsSpy;
+import dev.squaremile.asynctcp.testfitures.TransportEventsSpy;
 
-import static dev.squaremile.asynctcp.support.FreePort.freePort;
+import static dev.squaremile.asynctcp.testfitures.FreePort.freePort;
 
 class SamplesForAsyncTcpTest
 {
