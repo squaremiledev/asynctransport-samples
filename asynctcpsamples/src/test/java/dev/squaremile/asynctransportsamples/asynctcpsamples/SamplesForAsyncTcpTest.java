@@ -39,11 +39,11 @@ class SamplesForAsyncTcpTest
     void establishConnection()
     {
         final int serverPort = freePort();
-        serverSideTransport.handle(new Listen().set(1, serverPort));
+        serverSideTransport.handle(serverSideTransport.command(Listen.class).set(1, serverPort));
         assertThat(serverEvents.lastResponse(StartedListening.class, 1).port()).isEqualTo(serverPort);
 
         // When
-        clientSideTransport.handle(new Connect().set(serverPort, 2));
+        clientSideTransport.handle(clientSideTransport.command(Connect.class).set(serverPort, 2));
 
         // Then
         Connected connected = clientEvents.lastResponse(Connected.class, 2);
