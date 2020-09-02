@@ -11,14 +11,15 @@ import dev.squaremile.asynctcp.domain.api.commands.Connect;
 import dev.squaremile.asynctcp.domain.api.commands.Listen;
 import dev.squaremile.asynctcp.domain.api.events.Connected;
 import dev.squaremile.asynctcp.domain.api.events.StartedListening;
+import dev.squaremile.asynctcp.testfitures.TransportEventsSpy;
 import dev.squaremile.asynctcp.testfitures.app.WhiteboxApplication;
 
 import static dev.squaremile.asynctcp.testfitures.FreePort.freePort;
 
 class SamplesForAsyncTcpTest
 {
-    private WhiteboxApplication serverApp;
-    private WhiteboxApplication clientApp;
+    private WhiteboxApplication<TransportEventsSpy> serverApp;
+    private WhiteboxApplication<TransportEventsSpy> clientApp;
 
     @BeforeEach
     void setUp()
@@ -28,15 +29,15 @@ class SamplesForAsyncTcpTest
                 {
                     // Store the reference to manipulate the underlying transport directly from the test.
                     // A standard app does not require such things.
-                    serverApp = new WhiteboxApplication(transport);
+                    serverApp = new WhiteboxApplication<>(transport, new TransportEventsSpy());
                     return serverApp;
-                });
+                }, "");
         new TransportAppLauncher().launch(
                 transport ->
                 {
-                    clientApp = new WhiteboxApplication(transport);
+                    clientApp = new WhiteboxApplication<>(transport, new TransportEventsSpy());
                     return clientApp;
-                });
+                }, "");
     }
 
     @Test
