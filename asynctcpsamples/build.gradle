@@ -1,12 +1,11 @@
 plugins {
     id 'java'
     id 'idea'
-    id 'java-test-fixtures'
 }
 
 dependencies {
-    testImplementation "dev.squaremile:asynctcp:${systemUnderTestVersion}"
-    testImplementation testFixtures("dev.squaremile:asynctcp:${systemUnderTestVersion}")
+    implementation "dev.squaremile:asynctcp:${systemUnderTestVersion}"
+    implementation "org.agrona:agrona:1.8.0"
     testImplementation 'org.junit.jupiter:junit-jupiter:5.5.2'
     testImplementation 'org.assertj:assertj-core:3.16.1'
 }
