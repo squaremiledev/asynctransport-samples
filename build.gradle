@@ -1,9 +1,4 @@
 subprojects {
-
-    ext {
-        systemUnderTestVersion = property('dev.squaremile.asynctransport.version')
-    }
-    
     group 'dev.squaremile'
     version 'SNAPSHOT'
 
