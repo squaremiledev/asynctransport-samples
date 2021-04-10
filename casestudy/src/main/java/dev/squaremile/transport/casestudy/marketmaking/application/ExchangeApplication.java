@@ -45,6 +45,6 @@ class ExchangeApplication implements MarketApplication
 
     public void work()
     {
-        exchange.tick(clock.currentTime());
+
     }
 }

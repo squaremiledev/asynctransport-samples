@@ -4,18 +4,19 @@ import org.agrona.collections.MutableBoolean;
 
 
 import dev.squaremile.asynctcp.api.AsyncTcp;
-import dev.squaremile.asynctcp.api.wiring.ListeningApplication;
 import dev.squaremile.asynctcp.api.serialization.SerializedMessageListener;
+import dev.squaremile.asynctcp.api.transport.app.Event;
 import dev.squaremile.asynctcp.api.transport.app.TransportApplicationOnDuty;
 import dev.squaremile.asynctcp.api.transport.events.StartedListening;
+import dev.squaremile.asynctcp.api.wiring.ListeningApplication;
 import dev.squaremile.transport.casestudy.marketmaking.domain.Exchange;
 import dev.squaremile.transport.casestudy.marketmaking.domain.MarketListener;
 import dev.squaremile.transport.casestudy.marketmaking.domain.MidPriceUpdate;
 import dev.squaremile.transport.casestudy.marketmaking.domain.TrackedSecurity;
 
-import static dev.squaremile.asynctcp.api.wiring.ConnectionApplicationFactory.onStart;
 import static dev.squaremile.asynctcp.api.serialization.PredefinedTransportDelineation.lengthBasedDelineation;
 import static dev.squaremile.asynctcp.api.transport.values.Delineation.Type.SHORT_LITTLE_ENDIAN_FIELD;
+import static dev.squaremile.asynctcp.api.wiring.ConnectionApplicationFactory.onStart;
 import static dev.squaremile.transport.casestudy.marketmaking.domain.CurrentTime.currentTime;
 import static dev.squaremile.transport.casestudy.marketmaking.domain.CurrentTime.timeFromMs;
 import static dev.squaremile.transport.casestudy.marketmaking.domain.MarketListener.marketListeners;
@@ -66,7 +67,7 @@ public class ExchangeApplicationStarter
                     this.marketListener
             );
             final Exchange exchange = new Exchange(new TrackedSecurity().midPrice(0, initialMidPrice), priceMovement, initialDelay, tickCoolDownTime, marketListener);
-            return new ListeningApplication(
+            ListeningApplication listeningApplication = new ListeningApplication(
                     transport,
                     lengthBasedDelineation(SHORT_LITTLE_ENDIAN_FIELD, 0, 0),
                     port,
@@ -84,6 +85,35 @@ public class ExchangeApplicationStarter
                                 return marketConnectionApplication;
                             })
             );
+            return new TransportApplicationOnDuty()
+            {
+                @Override
+                public void onStart()
+                {
+                    listeningApplication.onStart();
+                    exchange.onStart();
+                }
+
+                @Override
+                public void onStop()
+                {
+                    exchange.onStop();
+                    listeningApplication.onStart();
+                }
+
+                @Override
+                public void work()
+                {
+                    exchange.work(clock.currentTime());
+                    listeningApplication.work();
+                }
+
+                @Override
+                public void onEvent(final Event event)
+                {
+                    listeningApplication.onEvent(event);
+                }
+            };
         });
         application.onStart();
         long startTime = currentTime();

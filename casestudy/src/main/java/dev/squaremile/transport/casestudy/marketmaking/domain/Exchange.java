@@ -99,4 +99,19 @@ public class Exchange
     {
         return marketMaking.firmPrice(marketParticipant);
     }
+
+    public void work(final long currentTime)
+    {
+        tick(currentTime);
+    }
+
+    public void onStart()
+    {
+
+    }
+
+    public void onStop()
+    {
+
+    }
 }

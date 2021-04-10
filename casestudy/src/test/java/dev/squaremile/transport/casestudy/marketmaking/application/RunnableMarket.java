@@ -54,23 +54,14 @@ class RunnableMarket implements Runnable
 
         while (true)
         {
+            clock.updateCurrentTime(System.nanoTime());
             marketTransportOnDuty.work();
         }
-    }
-
-    void awaitReady() throws InterruptedException
-    {
-        onReady.await();
     }
 
     byte[] performanceChartContent()
     {
         return chart.generateAsStringBytes();
-    }
-
-    public long messagesCount()
-    {
-        return chart.messagesCount();
     }
 
     public RunnableMarket runInSeparateThread()
@@ -83,7 +74,7 @@ class RunnableMarket implements Runnable
         try
         {
             Executors.newSingleThreadExecutor().execute(this);
-            awaitReady();
+            onReady.await();
         }
         catch (InterruptedException e)
         {

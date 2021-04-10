@@ -46,6 +46,15 @@ class MarketMakingTest
     }
 
     @Test
+    void runExchangeOnly() throws InterruptedException, IOException
+    {
+        final RunnableMarket runnableMarket = new RunnableMarket(freePort(), TimeUnit.SECONDS.toNanos(5), TimeUnit.MICROSECONDS.toNanos(10)).runInSeparateThread();
+        Thread.sleep(30_000);
+        Files.write(Paths.get("/tmp/asynctransportmarketmaking/index.html"), ChartTemplate.chartRendering().getBytes());
+        Files.write(Paths.get("/tmp/asynctransportmarketmaking/data.txt"), runnableMarket.performanceChartContent());
+    }
+
+    @Test
     void runSimulation() throws IOException
     {
         final RunnableMarket runnableMarket = new RunnableMarket(freePort(), TimeUnit.SECONDS.toNanos(30), TimeUnit.MICROSECONDS.toNanos(10)).runInSeparateThread();
@@ -55,18 +64,15 @@ class MarketMakingTest
         SpreadMarketMaking marketMaker = marketMakerApplicationStarter.application();
         spin(ofSeconds(35), marketMakerOnDuty);
         long messagesReceivedCountAtStart = marketMaker.receivedMessagesCount();
-        long marketSentMessagesCountAtStart = runnableMarket.messagesCount();
         final Instant startTime = Instant.now();
         long iterations = spin(ofSeconds(5), marketMakerOnDuty);
         final Instant endTime = Instant.now();
-        long marketSentMessagesCount = runnableMarket.messagesCount();
         long messagesReceivedCount = marketMaker.receivedMessagesCount();
 
         System.out.printf(
-                "Run in steady state for %s performing %d iterations per second, sending %d and receiving %d messages %n",
+                "Run in steady state for %s performing %d iterations per second, sending receiving %d messages %n",
                 between(startTime, endTime).toString(),
                 iterations / between(startTime, endTime).getSeconds(),
-                marketSentMessagesCount - marketSentMessagesCountAtStart,
                 messagesReceivedCount - messagesReceivedCountAtStart
         );
         Files.write(Paths.get("/tmp/asynctransportmarketmaking/index.html"), ChartTemplate.chartRendering().getBytes());
