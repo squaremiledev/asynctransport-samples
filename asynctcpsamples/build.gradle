@@ -5,6 +5,7 @@ plugins {
 
 dependencies {
     implementation "dev.squaremile:asynctcp:0.9.0"
+    implementation 'uk.co.real-logic:artio-codecs:0.97'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.5.2'
     testImplementation 'org.assertj:assertj-core:3.16.1'
 }
@@ -15,4 +16,15 @@ compileJava {
 
 test {
     useJUnitPlatform()
+}
+
+task generateFixMessages(type: JavaExec) {
+    main = 'dev.squaremile.asynctransportsamples.fix.GenerateFixMessages'
+    classpath = sourceSets.main.runtimeClasspath
+    outputs.dir "src/main/java"
+    args = [
+            "src/main/java",
+            'src/main/resources/dev/squaremile/asynctransportsamples/fix/FIXT11.xml',
+            'dev.squaremile.asynctransportsamples.fix.messages.fixt'
+    ]
 }
